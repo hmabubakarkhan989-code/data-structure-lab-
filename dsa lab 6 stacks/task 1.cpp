@@ -1,118 +1,86 @@
- //2502069 
 #include <iostream>
+#include <string>
 using namespace std;
 
-class Stack
-{
+class ArrayStack {
 private:
-    int arr[5];
+    string* arr;
     int top;
-    int size;
+    int capacity;
 
 public:
-
-    Stack()
-    {
+    ArrayStack(int size) {
+        capacity = size;
+        arr = new string[capacity];
         top = -1;
-        size = 5;
     }
 
-    void push(int value)
-    {
-        if (top == size - 1)
-        {
-            cout << "Stack Overflow!" << endl;
-        }
-        else
-        {
-            top++;
-            arr[top] = value;
-            cout << value << " pushed into stack." << endl;
-        }
+    ~ArrayStack() {
+        delete[] arr;
     }
 
-
-    void pop()
-    {
-        if (top == -1)
-        {
-            cout << "Stack Underflow!" << endl;
+    void push(string page) {
+        if (top == capacity - 1) {
+            cout << "Stack Overflow!\n";
+            return;
         }
-        else
-        {
-            cout << arr[top] << " popped from stack." << endl;
-            top--;
-        }
+        arr[++top] = page;
     }
 
-    void peek()
-    {
-        if (top == -1)
-        {
-            cout << "Stack is Empty!" << endl;
+    void pop() {
+        if (top == -1) {
+            cout << "Stack Underflow!\n";
+            return;
         }
-        else
-        {
-            cout << "Top element is: "
-                 << arr[top] << endl;
-        }
+        top--;
     }
 
-
-    void display()
-    {
-        if (top == -1)
-        {
-            cout << "Stack is Empty!" << endl;
+    string peek() {
+        if (top == -1) {
+            return "Stack is empty";
         }
-        else
-        {
-            cout << "Stack elements: ";
-
-            for (int i = top; i >= 0; i--)
-            {
-                cout << arr[i] << " ";
-            }
-
-            cout << endl;
-        }
+        return arr[top];
     }
 
-
-    bool isEmpty()
-    {
+    bool isEmpty() {
         return top == -1;
     }
 
-
-    bool isFull()
-    {
-        return top == size - 1;
+    void display() {
+        if (isEmpty()) {
+            cout << "Browsing history is empty.\n";
+            return;
+        }
+        cout << "Browser History (TOP to bottom):\n";
+        for (int i = top; i >= 0; i--) {
+            cout << "- " << arr[i] << endl;
+        }
     }
 };
 
-int main()
-{
-    Stack s;
+int main() {
+    ArrayStack history(10);
 
 
-    s.push(10);
-    s.push(20);
-    s.push(50);
-    s.push(70);
-    s.push(80);
-    s.push(100);
+    history.push("Google");
+    history.push("YouTube");
+    history.push("Facebook");
+    history.push("GitHub");
 
-    s.display();
-    s.peek();
+    history.display();
+    cout << endl;
 
-    s.pop();
 
-    cout << "Is stack empty? "
-         << (s.isEmpty() ? "Yes" : "No") << endl;
+    cout << "Simulating 'Back' button (POP performed)...\n";
+    history.pop();
+    cout << endl;
 
-    cout << "Is stack full? "
-         << (s.isFull() ? "Yes" : "No") << endl;
+
+    cout << "Current TOP page: " << history.peek() << endl << endl;
+
+
+    history.display();
 
     return 0;
 }
+
