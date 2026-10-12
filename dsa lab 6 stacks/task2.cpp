@@ -1,139 +1,88 @@
-//2502069 
 #include <iostream>
+#include <string>
 using namespace std;
 
-
-class Node
-{
-public:
-    int data;
-    Node* next;
-
-    Node(int value)
-    {
-        data = value;
-        next = NULL;
-    }
-};
-
-class Stack
-{
+class TextEditorStack {
 private:
-    Node* top;
+    string* arr;
+    int top;
+    int capacity;
 
 public:
-
-    Stack()
-    {
-        top = NULL;
+    TextEditorStack(int size) {
+        capacity = size;
+        arr = new string[capacity];
+        top = -1;
     }
 
-    void push(int value)
-    {
-        Node* newNode = new Node(value);
-
-        newNode->next = top;
-        top = newNode;
-
-        cout << value << " pushed into Stack." << endl;
+    ~TextEditorStack() {
+        delete[] arr;
     }
 
-
-    void pop()
-    {
-        if (top == NULL)
-        {
-            cout << "Stack Underflow!" << endl;
+    void push(string action) {
+        if (top == capacity - 1) {
+            cout << "Stack Overflow!\n";
             return;
         }
-
-        Node* temp = top;
-        top = top->next;
-
-        cout << temp->data
-             << " popped from Stack." << endl;
-
-        delete temp;
+        arr[++top] = action;
     }
 
-
-    void peek()
-    {
-        if (top == NULL)
-        {
-            cout << "Stack is Empty!" << endl;
-        }
-        else
-        {
-            cout << "TOP element: "
-                 << top->data << endl;
-        }
-    }
-
-
-    void display()
-    {
-        if (top == NULL)
-        {
-            cout << "Stack is Empty!" << endl;
+    void pop() {
+        if (top == -1) {
+            cout << "Stack Underflow!\n";
             return;
         }
+        top--;
+    }
 
-        Node* current = top;
-
-        cout << "Stack: ";
-
-        while (current != NULL)
-        {
-            cout << current->data << " ";
-            current = current->next;
+    string peek() {
+        if (top == -1) {
+            return "Stack is empty";
         }
-
-        cout << endl;
+        return arr[top];
     }
 
-
-    bool isEmpty()
-    {
-        return top == NULL;
+    bool isEmpty() {
+        return top == -1;
     }
 
-
-    ~Stack()
-    {
-        while (top != NULL)
-        {
-            Node* temp = top;
-            top = top->next;
-            delete temp;
+    void display() {
+        if (isEmpty()) {
+            cout << "No actions in history.\n";
+            return;
+        }
+        cout << "Editor Actions (TOP to bottom):\n";
+        for (int i = top; i >= 0; i--) {
+            cout << "- " << arr[i] << endl;
         }
     }
 };
 
-int main()
-{
-    Stack s;
+int main() {
+    TextEditorStack editor(10);
 
 
-    s.push(11);
-    s.push(22);
-    s.push(33);
-    s.push(44);
+    editor.push("Type \"Hello\"");
+    editor.push("Type \"World\"");
+    editor.push("Add \"!\"");
+    editor.push("Delete \"!\"");
 
 
-    s.display();
+    editor.display();
+    cout << endl;
 
 
-    s.peek();
+    cout << "Performing two Undo operations (POP x2)...\n";
+    editor.pop();
+    editor.pop();
+    cout << endl;
 
 
-    s.pop();
+    cout << "Current TOP action: " << editor.peek() << endl << endl;
 
-    s.display();
 
-    s.peek();
-    cout << "Is stack empty? "
-         << (s.isEmpty() ? "Yes" : "No") << endl;
+    editor.display();
 
     return 0;
 }
+
